@@ -4,3 +4,19 @@ result-*
 
 # Ignore automatically generated direnv output
 .direnv
+
+# Environment files (keep example tracked)
+.env
+.env.*
+!.env.example
+
+# Docker Compose local overrides and artifacts
+docker-compose.override.yml
+*.pid
+*.log
+
+# Editor/OS cruft
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

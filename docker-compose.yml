@@ -1,0 +1,35 @@
+services:
+  netdata:
+    image: netdata/netdata:latest
+    container_name: netdata
+    # Bind only to your Tailscale IP. Set TS_IP in a .env file.
+    # Falls back to 127.0.0.1 if TS_IP is not set.
+    ports:
+      - "${TS_IP:-127.0.0.1}:19999:19999"
+    cap_add:
+      - SYS_PTRACE
+    security_opt:
+      - apparmor:unconfined
+      # For SELinux, comment the line above and uncomment the next line:
+      # - label:disable
+    volumes:
+      - netdataconfig:/etc/netdata
+      - netdatalib:/var/lib/netdata
+      - netdatacache:/var/cache/netdata
+      - /etc/passwd:/host/etc/passwd:ro
+      - /etc/group:/host/etc/group:ro
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /etc/os-release:/host/etc/os-release:ro
+    restart: unless-stopped
+    # Optional: uncomment and provide values to auto-claim the node to Netdata Cloud
+    # environment:
+    #   NETDATA_CLAIM_TOKEN: ${NETDATA_CLAIM_TOKEN}
+    #   NETDATA_CLAIM_URL: https://app.netdata.cloud
+    #   NETDATA_CLAIM_ROOMS: ${NETDATA_CLAIM_ROOMS}
+
+volumes:
+  netdataconfig:
+  netdatalib:
+  netdatacache:
+
