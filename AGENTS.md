@@ -1,5 +1,12 @@
 # Repository Guidelines
 
+## System Overview
+- **Architecture**: ARM64 (aarch64) — Apple Silicon running Asahi Linux
+- **OS**: Fedora 42 (Linux 6.14.2-401.asahi.fc42.aarch64+16k)
+- **Purpose**: Development server for small-scale experiments and home projects
+- **Role**: Non-production workload host; production (customer-facing) runs on adjacent 3-node Kubernetes cluster
+- **Scope**: Testing, development, observability, and personal services
+
 ## Project Structure & Module Organization
 - Root: `docker-compose.yml` defines the `netdata` service and volumes.
 - Config: `.env` for local overrides, `.env.example` as the template to copy.
