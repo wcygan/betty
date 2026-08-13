@@ -1,13 +1,13 @@
 # Linux ChatGPT and RustDesk feasibility
 
-**Host scope:** Fedora Asahi Remix 42 Server, ARM64 (AArch64), SSH-only, with no graphical desktop.
+**Host scope:** Fedora Asahi Remix 44 Server, ARM64 (AArch64), SSH-only, with no graphical desktop.
 
 **Research date:** 2026-08-11
 
 ## Conclusion
 
-- The official ChatGPT desktop download page lists macOS and Windows desktop apps only. It does not list a Linux installer. A native ChatGPT desktop install on this host is therefore not documented as supported.
-- ChatGPT web access needs a browser session. An SSH-only host cannot provide the normal local graphical session. Use ChatGPT from another GUI system unless a separately supported terminal client is chosen.
+- The official ChatGPT desktop app for Linux is now available in preview. Fedora 44 and ARM64 are supported. The app includes ChatGPT, Work, projects, local files, and Codex.
+- The host still needs a graphical session. An SSH-only host cannot run the desktop app without a desktop environment and a display source.
 - RustDesk has Fedora RPM guidance and AArch64 release artifacts. The package can be tested on this host.
 - RustDesk graphical headless access is not a GUI-free SSH service. RustDesk documents `allow-linux-headless`, but this option requires a desktop environment, Xorg, and GDM. Those components are absent from the stated host profile.
 - SSH remains the direct management path. RustDesk is useful only after adding and maintaining a graphical stack, or after a separate test confirms that its terminal feature meets the need.
@@ -16,7 +16,7 @@
 
 | Area | Official evidence | Implication for this host |
 | --- | --- | --- |
-| ChatGPT desktop | [OpenAI download page](https://chatgpt.com/download/) lists desktop downloads under macOS and Windows, then lists iOS and Android mobile links. | No official native Linux desktop package is listed for Fedora ARM64. |
+| ChatGPT desktop | [OpenAI Linux desktop documentation](https://learn.chatgpt.com/docs/linux/linux-app) lists Fedora 43 and 44 plus ARM64 support. It provides an ARM64 Fedora RPM. | Betty can install the official preview after it has a graphical desktop session. |
 | RustDesk package | [RustDesk Linux guide](https://rustdesk.com/docs/en/client/linux/) recommends `.rpm` for Fedora or CentOS and says to use the native package when possible. | Fedora packaging is the right first test path. The host architecture still needs package and runtime validation. |
 | RustDesk ARM64 builds | [RustDesk releases](https://github.com/rustdesk/rustdesk/releases) include an AArch64 (ARM64) download row and links to Fedora downloads. | An ARM64 client artifact exists. This does not prove that a GUI-free Fedora Server deployment works. |
 | RustDesk headless mode | [RustDesk advanced settings](https://rustdesk.com/docs/en/self-host/client-configuration/advanced-settings/) says `allow-linux-headless` permits incoming connections without displays, but requires a desktop environment, Xorg server, and GDM. The default is `N`. | The current no-GUI host does not meet the documented prerequisites. Installing those components would change the host profile. |
@@ -25,13 +25,17 @@
 
 ## Recommended decision
 
-Keep this host SSH-only for administration. Use ChatGPT from a GUI-capable workstation. Install RustDesk only for a bounded ARM64 package test; do not expect graphical remote desktop access without adding a desktop environment, Xorg, and GDM.
+Use KDE Plasma for a graphical Betty deployment. The official ChatGPT Linux
+preview supports Fedora 44 ARM64 and uses XWayland by default in a Wayland
+session. Keep SSH as the recovery path. Install RustDesk only after the desktop
+session works; its documented headless graphical mode still requires a desktop
+environment, Xorg, and GDM.
 
 ## Sources
 
 All sources were accessed on 2026-08-11.
 
-1. [OpenAI — Download ChatGPT](https://chatgpt.com/download/)
+1. [OpenAI — ChatGPT desktop app for Linux](https://learn.chatgpt.com/docs/linux/linux-app)
 2. [RustDesk — Linux](https://rustdesk.com/docs/en/client/linux/)
 3. [RustDesk — Advanced Settings](https://rustdesk.com/docs/en/self-host/client-configuration/advanced-settings/)
 4. [RustDesk — GitHub Releases](https://github.com/rustdesk/rustdesk/releases)

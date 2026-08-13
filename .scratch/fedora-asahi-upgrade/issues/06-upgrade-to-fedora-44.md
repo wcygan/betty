@@ -4,13 +4,13 @@
 
 **Blocked by:** 05 — Validate Betty after the Fedora 43 upgrade.
 
-**Status:** ready-for-agent
+**Status:** complete
 
-- [ ] Refresh Fedora and Asahi metadata for Fedora 44.
-- [ ] Stage the reviewed Fedora 44 system-upgrade transaction.
-- [ ] Reboot through Fedora’s offline upgrade process.
-- [ ] Confirm Betty returns on the expected ARM64 Asahi kernel.
-- [ ] Confirm SSH and Tailscale access after the reboot.
+- [x] Refresh Fedora and Asahi metadata for Fedora 44.
+- [x] Stage the reviewed Fedora 44 system-upgrade transaction.
+- [x] Reboot through Fedora’s offline upgrade process.
+- [x] Confirm Betty returns on the expected ARM64 Asahi kernel.
+- [x] Confirm SSH and Tailscale access after the reboot.
 
 ## Read-only preflight checks
 
@@ -24,16 +24,22 @@ Expected baseline is Fedora `43`, `aarch64`, `multi-user.target`, healthy manage
 
 ## Upgrade commands
 
-Run the metadata refresh and transaction staging with the repository IDs approved in ticket 07. Keep the data drives detached.
+Keep the data drives detached. For this upgrade, disable `1password` and
+`tailscale-stable`. Ticket 03 excluded both repositories after signing errors.
+Ticket 07 will verify their official keys before it enables them again.
 
 ```bash
-sudo dnf makecache --refresh
-sudo dnf system-upgrade download --releasever=44 --allowerasing
+sudo dnf --disablerepo=1password --disablerepo=tailscale-stable makecache --refresh
+sudo dnf --disablerepo=1password --disablerepo=tailscale-stable system-upgrade download --releasever=44 --allowerasing
 sudo dnf history info last
 sudo dnf system-upgrade reboot
 ```
 
 Review the transaction before the reboot. Stop on signing errors, unexpected package removals, or a missing Asahi `kernel-16k` package.
+
+The user approved the Fedora 44 offline reboot after `dnf system-upgrade
+status` confirmed the prepared transaction. The staged command excludes
+`1password` and `tailscale-stable`.
 
 ## Post-reboot checks
 
@@ -44,6 +50,19 @@ ssh betty 'sudo systemctl is-active sshd tailscaled docker'
 ```
 
 Expected responses include Fedora `44`, an Asahi `aarch64` kernel, `multi-user`, `running`, no failed units, and active SSH, Tailscale, and Docker services.
+
+## Completion evidence
+
+The user approved the Fedora 44 offline reboot. At `2026-08-12T18:27:24Z`,
+Betty reported Fedora `44`, kernel
+`7.1.6-400.asahi.fc44.aarch64+16k`, architecture `aarch64`, and
+`multi-user.target`. The system state was `running`. SSH, Tailscale, and
+Docker were all `active`. `systemctl --failed --no-legend` returned no units.
+Both Immich drive mount points remained absent.
+
+DNF transaction `25` completed with status `Ok` at `2026-08-12 13:24:21`.
+It recorded the approved Fedora 44 staging command with `1password` and
+`tailscale-stable` disabled.
 
 ## Resources
 

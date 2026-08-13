@@ -4,12 +4,12 @@
 
 **Blocked by:** 03 — Repair repositories and preflight the Fedora upgrade.
 
-**Status:** ready-for-agent
+**Status:** complete
 
-- [ ] Stage the reviewed Fedora 43 system-upgrade transaction.
-- [ ] Reboot through Fedora’s offline upgrade process.
-- [ ] Confirm Betty returns on the expected ARM64 Asahi kernel.
-- [ ] Confirm SSH and Tailscale access after the reboot.
+- [x] Stage the reviewed Fedora 43 system-upgrade transaction.
+- [x] Reboot through Fedora’s offline upgrade process.
+- [x] Confirm Betty returns on the expected ARM64 Asahi kernel.
+- [x] Confirm SSH and Tailscale access after the reboot.
 
 ## Read-only pre-reboot checks
 
@@ -40,6 +40,33 @@ ssh betty 'sudo systemctl is-active sshd tailscaled docker'
 ```
 
 Expected responses include Fedora `43`, an Asahi `aarch64` kernel, `multi-user`, `running`, no failed units, and active management services. If SSH does not return, use the console path and do not continue to ticket 05.
+
+## Completion evidence
+
+The user approved the offline Fedora 43 reboot. They ran
+`sudo dnf system-upgrade reboot` from the Betty local console. The first
+Tailscale ping timed out during the expected reboot window. A later ping
+returned a 2 ms reply. The user then returned to Betty through SSH.
+
+The post-reboot SSH check ran at `2026-08-12T15:44:04Z`:
+
+```text
+Host: betty
+Fedora: 43
+Kernel: 7.1.6-400.asahi.fc43.aarch64+16k
+Architecture: aarch64
+Default target: multi-user.target
+System state: running
+Failed units: none
+sshd: active
+tailscaled: active
+docker: active
+Tailscale backend: Running
+```
+
+The Fedora 43 offline transaction applied successfully. SSH and Tailscale are
+available after the reboot. Immich remains stopped. Both external drives remain
+detached.
 
 ## Resources
 

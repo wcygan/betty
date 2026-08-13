@@ -4,15 +4,15 @@
 
 **Blocked by:** 01 — Create and validate upgrade recovery backup.
 
-**Status:** ready-for-agent
+**Status:** complete
 
-- [ ] Stop the Immich Compose project without deleting named volumes or bind-mounted data.
-- [ ] Confirm no Immich process or diagnostic process uses either data drive.
-- [ ] Flush pending filesystem writes.
-- [ ] Unmount the Immich data drive successfully.
-- [ ] Unmount the external backup drive successfully.
-- [ ] Confirm both mounts are absent before physical removal.
-- [ ] Record that the root, boot, and EFI filesystems remain on the internal NVMe device.
+- [x] Stop the Immich Compose project without deleting named volumes or bind-mounted data.
+- [x] Confirm no Immich process or diagnostic process uses either data drive.
+- [x] Flush pending filesystem writes.
+- [x] Unmount the Immich data drive successfully.
+- [x] Unmount the external backup drive successfully.
+- [x] Confirm both mounts are absent before physical removal.
+- [x] Record that the root, boot, and EFI filesystems remain on the internal NVMe device.
 
 ## Current Betty locations
 
@@ -49,6 +49,38 @@ lsblk -o NAME,FSTYPE,LABEL,MOUNTPOINTS | grep -E 'immich-primary|externalhdd|nvm
 Expected responses are no running Immich containers, successful `umount` commands, no output from `findmnt`, and the root, boot, and EFI mounts still on `nvme0n1`.
 
 Never run `docker compose down -v`. Never unplug a disk while `findmnt` still shows its mount or `fuser` reports users.
+
+## Completion evidence
+
+The user approved Step 2 shutdown and unmounting before the action.
+
+The read-only preflight ran at `2026-08-12T11:19:51Z`. It showed the four
+healthy Immich containers and both external drives mounted. `fuser` showed only
+the expected Immich PostgreSQL processes on `/mnt/immich`. It showed no process
+user on `/mnt/externalhd`.
+
+`docker compose down --remove-orphans` completed at `2026-08-12T11:28:10Z`.
+It removed the four containers and the Compose network. It did not use `-v` or
+`--volumes`. `docker compose ps` then showed no running container. `sync` ran
+after the stop.
+
+The post-stop `fuser` result showed only the kernel mount users. Both `umount`
+commands returned successfully. A mount check at `2026-08-12T11:29:34Z` showed
+no `/mnt/immich` or `/mnt/externalhd` mount. Both external partitions were
+unmounted.
+
+The user then physically unplugged both external drives. At
+`2026-08-12T11:44:39Z`, `lsblk` showed no `sda`, `sdb`, `immich-primary`, or
+`externalhdd` device. At `2026-08-12T11:44:48Z`, the system filesystems were:
+
+```text
+/       /dev/nvme0n1p6[/root]
+/boot   /dev/nvme0n1p5
+/boot/efi /dev/nvme0n1p4
+```
+
+The root, boot, and EFI filesystems remain on the internal `nvme0n1` device.
+Immich remains stopped and the external drives remain disconnected.
 
 ## Resources
 

@@ -4,13 +4,13 @@
 
 **Blocked by:** 04 — Upgrade Betty from Fedora 42 to Fedora 43.
 
-**Status:** ready-for-agent
+**Status:** complete
 
-- [ ] Confirm the operating system, kernel, architecture, and boot target.
-- [ ] Confirm no failed systemd units remain.
-- [ ] Confirm SSH, Tailscale, Docker, and Netdata are healthy.
-- [ ] Confirm storage and service configuration remain intact.
-- [ ] Record DNF transaction history and any migration warnings.
+- [x] Confirm the operating system, kernel, architecture, and boot target.
+- [x] Confirm no failed systemd units remain.
+- [x] Confirm SSH, Tailscale, Docker, and Netdata are healthy.
+- [x] Confirm storage and service configuration remain intact.
+- [x] Record DNF transaction history and any migration warnings.
 
 ## Read-only validation commands
 
@@ -26,6 +26,52 @@ ssh betty 'curl -fsS http://127.0.0.1:19999/api/v1/info | head -c 200'
 Expected evidence is Fedora `43`, `aarch64`, `multi-user.target`, system state `running`, no failed units, healthy management services, internal NVMe root and boot mounts, no detached data mounts, and a Netdata API response.
 
 Do not restart Immich or reconnect the data drives during this validation. That belongs after the upgrade chain is complete and the recovery evidence is preserved.
+
+## Completion evidence
+
+The main host check ran at `2026-08-12T15:46:12Z`.
+
+```text
+Fedora: 43
+Kernel: 7.1.6-400.asahi.fc43.aarch64+16k
+Architecture: aarch64
+Default target: multi-user.target
+System state: running
+System failed units: none
+sshd: active
+tailscaled: active
+docker: active
+netdata: active
+```
+
+Netdata returned a local API response from `127.0.0.1:19999`. Docker has the
+expected non-Immich containers, `vmsingle` and `glance`. Immich remains stopped.
+
+The root, boot, and EFI filesystems remain on the internal NVMe device:
+
+```text
+/         /dev/nvme0n1p6[/root]
+/boot     /dev/nvme0n1p5
+/boot/efi /dev/nvme0n1p4
+```
+
+No mount exists at `/mnt/immich` or `/mnt/externalhd`. DNF history entry 24
+records the completed Fedora 43 system-upgrade transaction.
+
+### Resolved migration warning
+
+At `2026-08-12T15:46:53 CDT`, the user service `clawdbot-gateway.service` was
+loaded but in `activating (auto-restart)`. Its latest exit status was 1 and it
+had 430 restarts. Its configured Node entrypoint did not exist. The user
+requested removal of Clawdbot.
+
+At `2026-08-12T16:44:02Z`, the gateway service was stopped and disabled. The
+only discovered Clawdbot artifacts were its user unit and enablement link. Both
+were removed. No installed global Clawdbot package or user data path was found.
+
+The final check at `2026-08-12T16:44:19Z` showed no Clawdbot unit, path, or
+Node process. The system and user service managers showed no failed units.
+SSH, Tailscale, Docker, and Netdata remained active.
 
 ## Troubleshooting commands
 
