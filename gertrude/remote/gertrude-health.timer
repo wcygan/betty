@@ -1,0 +1,10 @@
+[Unit]
+Description=Sample Gertrude health once per minute
+
+[Timer]
+OnBootSec=1min
+OnUnitActiveSec=1min
+AccuracySec=5s
+
+[Install]
+WantedBy=timers.target

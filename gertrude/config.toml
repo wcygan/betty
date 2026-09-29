@@ -1,0 +1,8 @@
+host = "gertrude"
+min_available_mib = 100
+min_disk_free_percent = 15
+pressure_full_percent = 5
+consecutive_samples = 3
+services = ["ssh.service", "tailscaled.service", "NetworkManager.service"]
+# Keep this many UTC calendar dates, including today.
+retention_days = 30

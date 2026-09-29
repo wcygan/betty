@@ -1,0 +1,17 @@
+[Unit]
+Description=Gertrude lightweight health snapshot
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/libexec/gertrude-health
+RuntimeDirectory=gertrude-health
+RuntimeDirectoryPreserve=yes
+StateDirectory=gertrude-health
+StateDirectoryMode=0750
+Nice=19
+IOSchedulingClass=idle
+TimeoutStartSec=20
+NoNewPrivileges=yes
+ProtectSystem=strict
+ProtectHome=yes
+PrivateTmp=yes
