@@ -1,0 +1,4 @@
+# Public fingerprint of the "betty" key in the Mac's 1Password SSH agent.
+fingerprint = "SHA256:+YBuj85ZB5hfwNsY7K9zlRZ8+5Bc9sMLKNdNdxADpO0"
+user = "wcygan"
+hosts = ["betty", "gertrude"]

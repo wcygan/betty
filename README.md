@@ -1,5 +1,19 @@
 # Betty
 
+## SSH and sudo through 1Password
+
+The Mac's 1Password SSH agent is the intended authentication provider for Betty
+and Gertrude. Read [the setup, support contract, and recovery guide](docs/ssh-sudo.md).
+
+```sh
+just ssh-sudo-doctor
+just ssh-sudo-test
+```
+
+These commands require local 1Password authorization. The test suite verifies
+agent-only SSH, forwarding, sudo root execution, and denial without the agent.
+It cannot certify that you physically touched the fingerprint sensor.
+
 ## Desktop harness
 
 Run these commands from the Mac that connects to Betty. The harness uses the

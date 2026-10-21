@@ -27,7 +27,7 @@ DEFAULT_RDP_PORT = int(os.environ.get("BETTY_RDP_PORT", "3389"))
 RUSTDESK_RELEASE_API = "https://api.github.com/repos/rustdesk/rustdesk/releases/latest"
 SSH_OPTIONS = (
     "-o", "BatchMode=yes", "-o", "IdentitiesOnly=yes", "-o",
-    "IdentityAgent=none", "-o", "ConnectTimeout=10",
+    "ConnectTimeout=10",
 )
 HOSTNAME_PATTERN = re.compile(
     r"(?=.{1,253}\Z)(?:[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?\.)*"

@@ -2,7 +2,7 @@
 
 ## System Overview
 - **Architecture**: ARM64 (aarch64) — Apple Silicon running Asahi Linux
-- **OS**: Fedora 42 (Linux 6.14.2-401.asahi.fc42.aarch64+16k)
+- **OS**: Fedora Asahi Remix 44 (aarch64, 16 KiB pages; inspected 2026-10-21)
 - **Purpose**: Development server for small-scale experiments and home projects
 - **Role**: Non-production workload host; production (customer-facing) runs on adjacent 3-node Kubernetes cluster
 - **Scope**: Testing, development, observability, and personal services
@@ -12,12 +12,16 @@
 - Config: `.env` for local overrides, `.env.example` as the template to copy.
 - Data: Docker named volumes `netdataconfig`, `netdatalib`, `netdatacache` persist service state.
 - Docs: `README.md` and this guide. No app source directory in this repo.
+- Access: `ssh-sudo/` and `scripts/ssh_sudo.py` own the Mac-to-Betty/Gertrude
+  1Password SSH and sudo workflow. Read `docs/ssh-sudo.md` before changing it.
 
 ## Build, Test, and Development Commands
 - Start: `docker compose up -d` — launches Netdata bound to `TS_IP`.
 - Stop: `docker compose down` — stops and removes the container (volumes kept).
 - Logs: `docker compose logs -f netdata` — tails service logs.
 - Validate: `docker compose config` — verifies YAML/env expansion.
+- Access tests: `just ssh-sudo-test` — live agent-only SSH/sudo tests for both hosts.
+- Local checks: `just check`; real PAM/rollback fixture: `just ssh-sudo-container-test`.
 - Clean volumes (destructive): `docker volume rm netdataconfig netdatalib netdatacache`.
 
 ## Coding Style & Naming Conventions
