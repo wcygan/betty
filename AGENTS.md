@@ -1,6 +1,9 @@
 # Repository Guidelines
 
 ## System Overview
+- **Migration**: Follow `docs/macos-migration.md` for the planned move to macOS,
+  repository dependencies, backup gates, and disk reclamation. The Linux
+  description below records the current host, not the intended final state.
 - **Architecture**: ARM64 (aarch64) — Apple Silicon running Asahi Linux
 - **OS**: Fedora Asahi Remix 44 (aarch64, 16 KiB pages; inspected 2026-10-21)
 - **Purpose**: Development server for small-scale experiments and home projects
@@ -14,6 +17,9 @@
 - Docs: `README.md` and this guide. No app source directory in this repo.
 - Access: `ssh-sudo/` and `scripts/ssh_sudo.py` own the Mac-to-Betty/Gertrude
   1Password SSH and sudo workflow. Read `docs/ssh-sudo.md` before changing it.
+- Immich deployment and backup tooling belong to the private
+  `https://github.com/wcygan/immich-infra` repository; inspect the live Betty
+  checkout and its uncommitted changes before assuming GitHub matches it.
 
 ## Build, Test, and Development Commands
 - Start: `docker compose up -d` — launches Netdata bound to `TS_IP`.

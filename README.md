@@ -1,5 +1,10 @@
 # Betty
 
+## macOS migration
+
+Follow [the macOS migration plan](docs/macos-migration.md) for backup, startup,
+remote access, repository setup, Immich recovery, and reclaiming disk space.
+
 ## SSH and sudo through 1Password
 
 The Mac's 1Password SSH agent is the intended authentication provider for Betty
