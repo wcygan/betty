@@ -51,32 +51,49 @@ anything needed before removal.
    preview any new transfer or retention policy. The current Crucial backup is
    on the same drive as the live data. Gertrude is a possible destination, not
    an established backup until the copy and verification succeed.
-   The 2026-10-28 SanDisk copy runs in Betty's `immich-sandisk-copy` tmux
-   session; its result is recorded in `backup-logs/copy-sandisk-2026-10-28.log`.
-   Confirm the success marker, exit status, destination identity and content
-   checks before treating it as complete. It is not a restore drill.
+   On 2026-10-28 at 14:28 CDT, the SanDisk copy at
+   `/mnt/immich-sandisk/immich-migration-2026-10-28` on exFAT UUID `E81E-3E7A`
+   passed all schema-2 database and media content checks with exit status 0.
+   The source snapshot is `/mnt/immich/immich-artifacts/2026-10-28_12-59-35`.
+   Betty's `backup-logs/copy-sandisk-2026-10-28.log` records the checks; Immich
+   was healthy afterward. Recheck the current state before proceeding. This is
+   not a restore drill and the Linux mount path will differ on macOS.
 
 ## 2. Try the existing macOS installation
 
-1. With a display and keyboard connected, shut Betty down normally. Immich
+Before leaving Linux, confirm the SanDisk verification succeeded and Immich is
+healthy. The backup is a point-in-time snapshot; uploads after it was taken
+need a later cutover backup. Bring a display or HDMI TV, a keyboard, a mouse,
+the macOS account password, and the other Mac for testing remote access. Keep
+the original drives connected and intact; do not unplug an active transfer.
+
+1. After verification has finished, shut Betty down normally, for example
+   `ssh -t betty 'sudo systemctl poweroff'` from the connecting Mac. The SSH
+   session will disconnect. Connect the display, keyboard, and mouse. Immich
    will be unavailable while macOS is running.
 2. Hold the power button until startup options appear. Select the existing
    macOS startup disk if available and sign in. The 74.5 GB APFS container
    observed from Linux suggests an installation but does not prove it boots.
-3. If macOS does not boot, inspect Recovery and determine whether a repair or
-   reinstall is needed. Do not erase partitions or external drives as part of
-   this test. Preserve Linux until the later verification gates pass.
+3. Sign in and check the macOS version and network. If macOS does not boot or
+   the account is unavailable, record the screen and stop; determine the
+   Recovery path before reinstalling. Do not erase partitions or external
+   drives as part of this test. Preserve Linux until the later gates pass.
 
 ## 3. Set up and verify access
 
 1. Connect macOS to the network, install Tailscale, and sign in to the correct
-   tailnet. Enable macOS Remote Login for the intended account.
+   tailnet. In System Settings > General > Sharing, enable Remote Login and
+   Screen Sharing for the intended account. Approve macOS network and security
+   prompts locally as needed.
 2. Configure the authorized public SSH key and the existing 1Password SSH agent
    workflow on the connecting Mac. Verify host identity and connect through
    Tailscale; a reinstalled OS can have a new SSH host key and tailnet identity.
-3. Test access after restart and login. Record whether Tailscale and remote
-   access are available before login; do not assume the Linux behavior carries
-   over to macOS.
+3. From the other Mac, connect to Betty's Tailscale address via Screen Sharing
+   and SSH. Check Betty's new SSH host key locally before trusting a changed key;
+   preserve the old known-host entry until the replacement is verified. Test
+   access after restart and login. Tailscale's usual macOS app runs in the user
+   session; before-login access and FileVault unlock are separate requirements,
+   so keep the display and keyboard available until restart behavior is proven.
 4. Set up GitHub access; clone the Betty and private Immich repositories as well
    as `https://github.com/wcygan/dotfiles.git`. Reconcile preserved live changes
    before using the Immich checkout. Run `./bootstrap.sh` in dotfiles.
@@ -104,6 +121,14 @@ anything needed before removal.
    Verify its contents and perform an isolated restore drill; check the same
    user-visible data. Keep the original drive and the pre-migration copy.
 
+The live Linux deployment observed on 2026-10-28 uses Immich v3.2.0 and the
+Crucial paths `/mnt/immich/library` and `/mnt/immich/postgres`. The snapshot is
+not a live sync. The Mac checkout and Betty's Linux checkout have different
+Git revisions and Compose files, though the inspected backup/restore modules
+matched at that observation. Reconcile the actual Compose configuration and
+preserve necessary local changes and secrets before Linux is erased. Restore
+into an isolated destination, not the source filesystem or active database.
+
 ## 5. Reclaim the internal Linux space
 
 Proceed only after macOS access and the Immich restore and independent backup
@@ -125,6 +150,8 @@ again before removing the temporary copy. Keep an independent backup afterwards.
 ## References
 
 - [Apple startup options](https://support.apple.com/en-us/102342)
+- [Apple Screen Sharing setup](https://support.apple.com/en-ie/guide/mac-help/mh11848/mac)
+- [Tailscale macOS variants and before-login behavior](https://tailscale.com/docs/concepts/macos-variants)
 - [Immich backup and restore](https://docs.immich.app/administration/backup-and-restore/)
 - [Computer Use setup](https://learn.chatgpt.com/docs/computer-use)
 - [Remote connections](https://learn.chatgpt.com/docs/remote-connections)
