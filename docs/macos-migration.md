@@ -1,8 +1,22 @@
 # Migrate Betty to macOS
 
-Reuse the existing macOS installation if it works. Keep Linux and the original
-Immich disk until macOS, remote access, Immich, and an independent Mac-side
-backup have been verified. Job Scanner and other Linux services are out of scope.
+Current checkpoint (2026-10-29): the existing account was inaccessible. The user
+completed Recovery Assistant's Erase Mac and activation and is reinstalling
+macOS from the verified Tahoe USB. Inspect the resulting disk layout before
+following any older partition-reclamation instructions below. The independent
+SanDisk backup also passed a complete macOS checksum reread on October 28:
+348,309,621,133 bytes, all checks passed, exit 0; no Immich restore drill yet.
+See [the remote workstation setup plan](macos-agent-workstation.md) for native
+OpenAI remote access, SSH, desktop access and the 1Password trust boundary.
+
+The original preference was to reuse the existing macOS installation and keep
+Linux available through verification. Account recovery and the subsequent
+Recovery erase changed that route; do not assume the old Linux installation
+still exists. Keep the original external Immich disk and independent backup
+until the Mac deployment and a new backup/restore drill have been verified.
+Job Scanner and other Linux services are out of scope. The numbered sections
+below retain the original migration sequence; use the current checkpoint and
+remote workstation plan for the next setup actions.
 
 ## Repositories and dependencies
 
