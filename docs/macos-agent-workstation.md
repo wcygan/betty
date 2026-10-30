@@ -1,7 +1,11 @@
 # Betty as a remote macOS development workstation
 
-Prepared 2026-10-29. This is a proposed setup and verification sequence, not a
-claim that Betty is configured. macOS installation is still in progress.
+Prepared 2026-10-29. This is the setup and verification plan. See
+[macOS setup progress](macos-setup-progress.md) for completed checks: macOS
+26.7.2 is installed, the standard account is `rat`, and SSH over Tailscale works.
+Native remote access, unlocked Computer Use, dotfiles and shared skills also
+have recorded successful tests. Locked use and unattended reboot remain
+unproven; the progress record distinguishes fresh checks from earlier evidence.
 
 ## Recommended layout
 
@@ -12,7 +16,7 @@ Keep personal vault contents and human approval on the MacBook or phone.
 - A human-only administrator account maintains the machine. Its password and
   FileVault recovery key stay in the human's 1Password, outside Betty's agent
   account. Do not grant passwordless sudo.
-- A standard account, preferably `wcygan` to match existing workflows, owns
+- The existing standard account `rat` owns
   development projects and the agent desktop. Install tools requiring admin
   approval through a human-controlled setup session. If setup already created
   `wcygan` as admin, create and test the separate administrator first, then

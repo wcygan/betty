@@ -3,9 +3,10 @@
 ## System Overview
 - **Migration**: Follow `docs/macos-migration.md` for the planned move to macOS,
   repository dependencies, backup gates, and disk reclamation. The Linux
-  description below records the current host, not the intended final state.
-- **Architecture**: ARM64 (aarch64) — Apple Silicon running Asahi Linux
-- **OS**: Fedora Asahi Remix 44 (aarch64, 16 KiB pages; inspected 2026-10-21)
+  service definitions and access tooling below are historical; current setup
+  and remaining gates are recorded in `docs/macos-setup-progress.md`.
+- **Architecture**: ARM64 (aarch64) — Apple Silicon running macOS
+- **OS**: macOS Tahoe 26.7.2 (revalidated 2026-10-29); standard agent user `rat`
 - **Purpose**: Development server for small-scale experiments and home projects
 - **Role**: Non-production workload host; production (customer-facing) runs on adjacent 3-node Kubernetes cluster
 - **Scope**: Testing, development, observability, and personal services

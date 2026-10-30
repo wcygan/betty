@@ -1,9 +1,11 @@
 # Migrate Betty to macOS
 
-Current checkpoint (2026-10-29): the existing account was inaccessible. The user
-completed Recovery Assistant's Erase Mac and activation and is reinstalling
-macOS from the verified Tahoe USB. Inspect the resulting disk layout before
-following any older partition-reclamation instructions below. The independent
+Current checkpoint (2026-10-29): after Recovery Assistant's Erase Mac and
+activation, macOS Tahoe 26.7.2 is installed. SSH over Tailscale is verified as
+the standard user `rat`; see [macOS setup progress](macos-setup-progress.md).
+Read-only revalidation found an 82.5 GB macOS container and remaining Fedora/Linux
+partitions, including a 410.3 GB Linux partition. No space has been reclaimed;
+recheck identities and recovery gates before any deletion or expansion. The independent
 SanDisk backup also passed a complete macOS checksum reread on October 28:
 348,309,621,133 bytes, all checks passed, exit 0; no Immich restore drill yet.
 See [the remote workstation setup plan](macos-agent-workstation.md) for native

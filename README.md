@@ -2,10 +2,17 @@
 
 ## macOS migration
 
+See [macOS setup progress](docs/macos-setup-progress.md) for the current verified setup and
+remaining locked-use, reboot recovery, Immich and disk-reclamation work.
+
 Follow [the macOS migration plan](docs/macos-migration.md) for backup, startup,
 remote access, repository setup, Immich recovery, and reclaiming disk space.
 
 ## SSH and sudo through 1Password
+
+The commands below describe the earlier Linux access workflow. Rat on macOS
+uses ordinary OpenSSH with no agent forwarding or passwordless sudo; follow
+[the current progress record](docs/macos-setup-progress.md) for this host.
 
 The Mac's 1Password SSH agent is the intended authentication provider for Betty
 and Gertrude. Read [the setup, support contract, and recovery guide](docs/ssh-sudo.md).
