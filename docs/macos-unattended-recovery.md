@@ -4,7 +4,8 @@ Decided 2026-10-30. This record owns Betty's power-loss recovery design and
 supersedes the "keep FileVault on, automatic login off" guidance in the
 [workstation plan](macos-agent-workstation.md) and option list in the
 [headless recovery findings](macos-headless-recovery-findings-2026-10-29.md).
-Status: settings applied; **no power-cut test has passed yet**.
+Status: settings applied; a restart test passed 2026-10-30; **no power-cut
+test has passed yet**.
 
 ## Goal
 
@@ -72,9 +73,9 @@ Mitigations, in force or planned:
 | --- | --- | --- | --- |
 | Power | `autorestart 1` (start up after power failure), `sleep 0` | `cygan` | Verified over SSH |
 | Disk | FileVault off | `cygan` | Verified over SSH (`fdesetup status`) |
-| Login | Automatic login as `rat` | `cygan` | Verified over SSH (`autoLoginUser` = `rat`); not yet exercised by a boot |
+| Login | Automatic login as `rat` | `cygan` | Passed restart test 2026-10-30 |
 | Network | Wired Ethernet `en0` is the default route | — | Verified over SSH |
-| Tailscale | Standalone `macsys` app, Open at Login for `rat` | `rat` | Login item recorded 2026-10-29; recovery after automatic login untested |
+| Tailscale | Standalone `macsys` app, Open at Login for `rat` | `rat` | Passed restart test 2026-10-30 |
 | Rex | Rex app at login for `rat`; its server joins the tailnet with built-in Tailscale as `betty-rex` | `rat` | Not installed yet |
 | Rex config | `~/.config/rex` links to the dotfiles checkout | `rat` | Verified; dotfiles at `bc86408` |
 | Agents | `claude`, `codex`, `pi` CLIs; `rex skill setup` and hooks | `rat` | Not installed yet |
@@ -97,6 +98,23 @@ the design depends on a real `rat` session.
 3. Login items start Tailscale and Rex.
 4. Rex's server rejoins the tailnet as `betty-rex` with its stored login.
 5. The MacBook's Rex app reconnects; agents and terminals start fresh.
+
+## Restart test — 2026-10-30 (passed)
+
+The owner restarted Betty from its own desktop (a software restart, not a
+power cut). Nobody touched Betty afterward. A MacBook watcher polled every
+5 seconds over the LAN and Tailscale:
+
+| Time after Betty dropped off | Stage |
+| --- | --- |
+| 0 s (14:36:36) | LAN SSH port stopped answering |
+| 39 s | LAN SSH port answered |
+| 40 s | SSH as `rat` over Tailscale worked; console user `rat`; Tailscale running |
+
+Follow-up checks at 25 s of uptime: FileVault off, `who` showed only `rat` on
+the console, and Tailscale reported Betty online. This proves automatic login
+and Tailscale recovery. It does not exercise `autorestart` (power returning)
+or Rex, which was not installed yet.
 
 ## Acceptance test (pending)
 

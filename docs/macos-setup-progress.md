@@ -163,6 +163,8 @@ was performed in this revalidation.
   ([unattended recovery](macos-unattended-recovery.md)).
 - [ ] Install Rex and the agent CLIs as `rat`; add Rex to Open at Login; sign
   in Rex's built-in Tailscale as `betty-rex`.
+- [x] Restart test: automatic login and Tailscale recovered in about 40 s
+  without input (2026-10-30).
 - [ ] Pass the power-cut acceptance test in the unattended recovery record.
 - [ ] Install/authenticate Codex CLI if SSH-based Codex projects are desired,
   then test it in a fresh remote login shell.
