@@ -93,14 +93,12 @@ the design depends on a real `rat` session.
 
 ## Hardening review — 2026-10-30
 
-Findings from read-only checks; none of these changes have been made yet.
-
-| Issue | Finding | Proposed fix | Owner |
+| Issue | Finding | Decision | Status |
 | --- | --- | --- | --- |
-| Betty can reach the MacBook's Rex | The MacBook app serves its own Rex server over Tailscale (`foobar2-rex`). From a Betty pane, `rex -S https://foobar2-rex… whoami` returned `wcygan@github … from betty, acting as wcygan`: anything on Betty, including agents, can open a full shell on the vault-bearing MacBook. This breaks the boundary in the [workstation plan](macos-agent-workstation.md). | Turn off **Serve over Tailscale** in the MacBook app's Server settings; the phone then sees only Betty | owner |
-| Screen never locks | `sysadminctl -screenLock` reports a 14,400 s delay and display sleep is off, so the auto-logged-in desktop stays open | Require the password immediately, then lock about a minute after login with a `rat` LaunchAgent (`pmset displaysleepnow`). Rex, SSH, Tailscale and agents keep running while locked; native Computer Use on a locked screen is intermittent | owner sets the password rule; agent adds the LaunchAgent |
-| Tailscale keys expire | `betty` expires 2027-04-27 and `betty-rex` 2027-04-28; after that Betty drops off until someone signs in again | Disable key expiry for both devices in the Tailscale admin console, or set a calendar reminder | owner |
-| Find My / Activation Lock | Not checked | Confirm on in `rat`'s or `cygan`'s Apple Account settings | owner |
+| Betty can reach the MacBook's Rex | The MacBook app serves its own Rex server over Tailscale (`foobar2-rex`). From a Betty pane, `rex -S https://foobar2-rex… whoami` returned `wcygan@github … from betty, acting as wcygan`: anything on Betty, including agents, can open a shell on the MacBook as `wcygan`. This conflicts with the boundary in the [workstation plan](macos-agent-workstation.md). | Owner keeps the MacBook's Rex server on Tailscale so the phone can reach the MacBook. Accepted risk. Revisit if Rex adds per-device or per-key authentication, or if agents on Betty get broader autonomy. | Accepted 2026-10-30 |
+| Screen never locks | `sysadminctl -screenLock` reports a 14,400 s delay and display sleep is off, so the auto-logged-in desktop stays open | Deferred: native ChatGPT Computer Use is unreliable on a locked screen. Once it works reliably while locked, require the password immediately and lock about a minute after login with a `rat` LaunchAgent (`pmset displaysleepnow`). Rex, SSH, Tailscale and agents keep running while locked. | Deferred |
+| Tailscale keys expire | `betty` and `betty-rex` were set to expire in April 2027, after which Betty would drop off until someone signed in again | Owner disabled key expiry in the Tailscale admin console | Done; verified 2026-10-30 (`betty`, `betty-rex`, `foobar2-rex` show no `KeyExpiry`) |
+| Find My / Activation Lock | Not checked | Confirm on in the Apple Account settings | Open |
 
 ## Recovery sequence
 

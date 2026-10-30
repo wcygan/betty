@@ -69,4 +69,6 @@ All as `rat`, without administrator rights:
 The power-cut test passed after this note was first written; see
 [unattended recovery](macos-unattended-recovery.md).
 
-- Optional screen lock after automatic login, and Find My/Activation Lock check.
+- Hardening decisions are in the unattended recovery record's hardening review:
+  MacBook Rex reachable from Betty (accepted), screen lock (deferred until
+  locked Computer Use is reliable), key expiry (disabled), Find My (open).
