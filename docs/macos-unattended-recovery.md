@@ -1,0 +1,132 @@
+# Betty unattended recovery: always available with power and internet
+
+Decided 2026-10-30. This record owns Betty's power-loss recovery design and
+supersedes the "keep FileVault on, automatic login off" guidance in the
+[workstation plan](macos-agent-workstation.md) and option list in the
+[headless recovery findings](macos-headless-recovery-findings-2026-10-29.md).
+Status: settings applied; **no power-cut test has passed yet**.
+
+## Goal
+
+As long as Betty has power and internet, it is reachable and working without
+anyone touching it. After a power outage or crash it boots, logs in, rejoins
+Tailscale, and starts the Rex server so the MacBook can reconnect to it.
+Running sessions do not need to survive a restart; the services do.
+
+## Decision
+
+FileVault off, automatic login as the standard account `rat`, start up after
+power failure, and Tailscale plus Rex as `rat`'s login items. The owner
+explicitly accepted the security tradeoff below on 2026-10-30.
+
+This is option 3 from the 2026-10-29 findings, with Rex in place of ChatGPT as
+the service that must come back.
+
+## Why not keep FileVault
+
+With FileVault on, every restart stops at the disk-unlock screen until someone
+enters a password. Nothing on the data volume runs before that, including
+Tailscale, Rex and SSH as `rat`, and macOS disables automatic login.
+
+macOS 26 can unlock FileVault over SSH at that pre-boot screen on Apple silicon
+when Remote Login was already on. It still needs a person after every outage,
+runs before Tailscale, and so works only from the LAN. Reports say wired
+Ethernet worked first and Wi-Fi from 26.5. It fails the "no one touches it"
+goal, so it is a fallback, not the design.
+
+The open-source `tailscaled` LaunchDaemon only helps before GUI login; it cannot
+unlock an encrypted disk, and Rex and agent credentials need a user session
+anyway (see below).
+
+## How others run always-on Mac minis
+
+Homelab and Mac-hosting guides converge on the same three choices:
+
+1. FileVault off, automatic login, "start up after power failure", apps as login
+   items. The common answer for unattended recovery, and the one chosen here.
+2. FileVault on, with a person unlocking after each outage, now possible over
+   SSH on macOS 26. Hosting providers offer it but describe it as experimental.
+3. A UPS to ride out short outages, used alongside either choice.
+
+## Accepted tradeoff and mitigations
+
+Apple silicon still encrypts the internal disk with a hardware key, so removing
+the storage does not expose data. It no longer protects against someone who
+takes the whole Mac: it boots and logs in as `rat`. Keychain items that
+automatic login unlocks are reachable to anyone at the desktop.
+
+Mitigations, in force or planned:
+
+- `rat` remains a standard account. Administration needs `cygan`'s password,
+  which stays outside Betty's agent session. No passwordless sudo.
+- Credentials on `rat` stay scoped and revocable, as the
+  [workstation plan](macos-agent-workstation.md) already requires; no personal
+  vault or browser profile.
+- Find My and Activation Lock on (to verify).
+- Optional: lock the screen right after automatic login, so local access needs
+  `rat`'s password while login items keep running. Not configured yet.
+
+## Configuration
+
+| Layer | Setting | Owner | Status 2026-10-30 |
+| --- | --- | --- | --- |
+| Power | `autorestart 1` (start up after power failure), `sleep 0` | `cygan` | Verified over SSH |
+| Disk | FileVault off | `cygan` | Verified over SSH (`fdesetup status`) |
+| Login | Automatic login as `rat` | `cygan` | Verified over SSH (`autoLoginUser` = `rat`); not yet exercised by a boot |
+| Network | Wired Ethernet `en0` is the default route | — | Verified over SSH |
+| Tailscale | Standalone `macsys` app, Open at Login for `rat` | `rat` | Login item recorded 2026-10-29; recovery after automatic login untested |
+| Rex | Rex app at login for `rat`; its server joins the tailnet with built-in Tailscale as `betty-rex` | `rat` | Not installed yet |
+| Rex config | `~/.config/rex` links to the dotfiles checkout | `rat` | Verified; dotfiles at `bc86408` |
+| Agents | `claude`, `codex`, `pi` CLIs; `rex skill setup` and hooks | `rat` | Not installed yet |
+| Backup power | UPS | owner | Optional; not present (`pmset -g ps` reports AC only) |
+
+Rex's built-in Tailscale makes Rex its own tailnet device, independent of the
+Tailscale app. Rex is reachable once the Rex app starts even if the app's VPN is
+slow; SSH to Betty still depends on the Tailscale app. The Rex server admits
+only the device owner by default, so do not pass
+`--tailscale-allow-tailnet-members` or plain-HTTP `--allow-anonymous`.
+
+Agent CLIs keep sign-in credentials in `rat`'s login Keychain, which automatic
+login unlocks. A pre-login daemon could not use them; this is another reason
+the design depends on a real `rat` session.
+
+## Recovery sequence
+
+1. Power returns; firmware starts the Mac (`autorestart`).
+2. macOS boots without a FileVault prompt and logs in `rat`.
+3. Login items start Tailscale and Rex.
+4. Rex's server rejoins the tailnet as `betty-rex` with its stored login.
+5. The MacBook's Rex app reconnects; agents and terminals start fresh.
+
+## Acceptance test (pending)
+
+Perform after Rex and the agent CLIs are installed. Do not touch Betty between
+steps 1 and 3.
+
+1. Disconnect Betty's power for at least 30 seconds, then reconnect it.
+2. From the MacBook, time each stage separately: Tailscale ping and SSH as
+   `rat`, `rex -S betty ls`, and a new Rex pane that runs a command.
+3. Have each agent (Claude Code, Codex, Pi) open, read and close a pane on Betty.
+4. Record which stages passed and how long each took. Claim only what was
+   observed. Repeat once with a normal `sudo shutdown -r now` as `cygan`.
+
+If a login item fails to recover in an observed test, consider a bounded
+`rat` LaunchAgent for that one service, as the findings record suggested. Do
+not add one before a failure is observed.
+
+## Rollback
+
+Turning FileVault back on (as `cygan`) restores disk-password protection and
+disables automatic login; unattended recovery is lost again. The FileVault
+recovery key stays in the owner's 1Password, never on Betty.
+
+## Sources
+
+- [Jeff Geerling: remote FileVault unlock in Tahoe](https://www.jeffgeerling.com/blog/2025/you-can-finally-manage-macs-filevault-remotely-tahoe/)
+- [Apple: manage FileVault and SSH unlock](https://support.apple.com/guide/security/managing-filevault-sec8447f5049/web)
+- [Greenmini: FileVault on hosted Mac servers](https://portal.greenmini.host/help/filevault-on-mac-servers-in-our-data-center)
+- [vBoxx: FileVault on Mac servers](https://mac-hosting.vboxx.eu/help/filevault-on-mac-servers)
+- [HomeTechOps: Mac mini auto power-on on Tahoe](https://hometechops.com/mac/mac-mini-auto-power-on-restart-tahoe)
+- [Channels community: Mac mini recovery after power outage](https://community.getchannels.com/t/how-to-make-a-mac-mini-reboot-after-power-outage-and-have-channels-work-without-user-login/33528)
+- [Tailscale macOS variants](https://tailscale.com/docs/concepts/macos-variants)
+- [Rex remote access](https://www.superlogical.com/rex/docs/linux/remote-access)

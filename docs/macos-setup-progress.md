@@ -1,6 +1,6 @@
 # macOS setup progress
 
-Updated 2026-10-29. This records completed checks separately from user-reported
+Updated 2026-10-30. This records completed checks separately from user-reported
 setup and work still pending. No passwords, private keys, recovery codes,
 authentication tokens, or private backup archives belong in this repository.
 
@@ -10,6 +10,8 @@ Betty boots macOS Tahoe 26.7.2. Key-based SSH from the MacBook works as `rat`
 over Tailscale. Native OpenAI remote connections and unlocked Computer Use
 have passed recorded tests; locked use is intermittent and unattended reboot
 recovery remains unproven.
+On 2026-10-30 the owner chose unattended recovery: FileVault off and automatic
+login as `rat`. See [unattended recovery](macos-unattended-recovery.md).
 The existing [workstation plan](macos-agent-workstation.md) describes the wider
 setup; this progress record supplies its current status.
 
@@ -120,6 +122,21 @@ fallback disabled and strict host-key checking. Read-only observations:
 - Root filesystem reports about 15 GiB available. Do not place the approximately
   348 GB Immich restore on the current internal volume.
 
+## Revalidation from the MacBook — October 30
+
+Read-only SSH checks as `rat` after the owner changed settings as `cygan`:
+
+- `fdesetup status`: FileVault is off.
+- `autoLoginUser` is `rat`. No restart has exercised it yet; `cygan` held the
+  console during the check.
+- AC power: `autorestart 1`, `sleep 0`, `displaysleep 0`. Default route is
+  wired Ethernet `en0`. `pmset -g ps` reports AC power only (no UPS).
+- Tailscale is the standalone `macsys` app (`io.tailscale.ipn.macsys`), not the
+  App Store build or a `tailscaled` LaunchDaemon.
+- Dotfiles fast-forwarded to `bc86408`, preserving the uncommitted Ghostty
+  change, and `./bootstrap.sh link` linked `~/.config/rex`.
+- Rex and the `claude`, `codex` and `pi` CLIs are not installed.
+
 Historical evidence is preserved in [headless recovery findings](macos-headless-recovery-findings-2026-10-29.md)
 and [Computer Use reliability](macos-remote-computer-use-reliability.md).
 The supported `./bootstrap.sh verify` and `./bootstrap.sh agent-skills --check`
@@ -142,8 +159,11 @@ was performed in this revalidation.
 - [ ] Resolve intermittent confirmed-lock Computer Use failure. A confirmed-lock
   attempt failed at approximately 22:22 UTC; later manual unlock restored access.
   One successful idle trial does not establish locked-use reliability.
-- [ ] Test ChatGPT's newly added login item and establish a supervised recovery
-  path after restart/cold boot. FileVault remains on; unattended recovery is unproven.
+- [x] Choose a recovery design: FileVault off, automatic login as `rat`
+  ([unattended recovery](macos-unattended-recovery.md)).
+- [ ] Install Rex and the agent CLIs as `rat`; add Rex to Open at Login; sign
+  in Rex's built-in Tailscale as `betty-rex`.
+- [ ] Pass the power-cut acceptance test in the unattended recovery record.
 - [ ] Install/authenticate Codex CLI if SSH-based Codex projects are desired,
   then test it in a fresh remote login shell.
 - [ ] Re-audit scoped GitHub permissions/expiration without exposing the token;

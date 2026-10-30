@@ -5,6 +5,9 @@
   repository dependencies, backup gates, and disk reclamation. The Linux
   service definitions and access tooling below are historical; current setup
   and remaining gates are recorded in `docs/macos-setup-progress.md`.
+- **Recovery**: `docs/macos-unattended-recovery.md` owns power-loss recovery:
+  FileVault off and automatic login as `rat` by owner decision (2026-10-30).
+  Read it before changing FileVault, login, power, or login-item settings.
 - **Architecture**: ARM64 (aarch64) — Apple Silicon running macOS
 - **OS**: macOS Tahoe 26.7.2 (revalidated 2026-10-29); standard agent user `rat`
 - **Purpose**: Development server for small-scale experiments and home projects

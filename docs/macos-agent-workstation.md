@@ -6,6 +6,8 @@ Prepared 2026-10-29. This is the setup and verification plan. See
 Native remote access, unlocked Computer Use, dotfiles and shared skills also
 have recorded successful tests. Locked use and unattended reboot remain
 unproven; the progress record distinguishes fresh checks from earlier evidence.
+Power-loss recovery is now owned by [unattended recovery](macos-unattended-recovery.md),
+which supersedes this plan's FileVault and automatic-login guidance.
 
 ## Recommended layout
 
@@ -85,9 +87,10 @@ workflows, not established protection for unrestricted native desktop access.
 1. Finish setup, record macOS version and internal disk layout, save account
    credentials and recovery information privately. Do not assume the Recovery
    erase reclaimed Linux space; inspect first. Keep external Immich disks intact.
-2. Establish the human-admin and standard-development accounts. Keep FileVault
-   enabled, automatic login disabled, and recovery credentials off the agent
-   desktop. Keep the display available until restart access is proven.
+2. Establish the human-admin and standard-development accounts. Keep recovery
+   credentials off the agent desktop. FileVault is off and `rat` logs in
+   automatically by decision; see [unattended recovery](macos-unattended-recovery.md).
+   Keep the display available until restart access is proven.
 3. Install one Tailscale variant. Start with the vendor-recommended standalone
    app, approve its system extension and VPN configuration, and restrict tailnet
    access to the intended devices. If before-login access is required, evaluate
@@ -125,7 +128,7 @@ workflows, not established protection for unrestricted native desktop access.
    Codex app-server listeners publicly.
 10. Allow the host app to start at login and keep Betty awake for work while
     allowing the display to sleep. Verify a GUI session exists for desktop work.
-    Do not disable FileVault or enable automatic login just to avoid login steps.
+    FileVault and automatic login follow [unattended recovery](macos-unattended-recovery.md).
 11. Establish scoped GitHub access and clone `betty`, private `immich-infra`,
     and requested projects. Reconcile the securely preserved live Linux source
     and configuration; no bulk restoration of old development folders is needed.
@@ -151,6 +154,8 @@ workflows, not established protection for unrestricted native desktop access.
   availability and Computer Use separately. Test a cold boot before relying on
   unattended recovery. Retain a local recovery path if any prerequisite fails.
 
+FileVault is now off (see [unattended recovery](macos-unattended-recovery.md));
+this paragraph applies only if it is turned back on.
 Apple documents FileVault unlock over SSH on Apple-silicon Macs running macOS
 26 or later when Remote Login and networking are available. Verify this on
 Ethernet/LAN; it does not establish that Tailscale or OpenAI's relay runs before

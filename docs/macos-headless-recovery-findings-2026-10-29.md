@@ -39,6 +39,11 @@ The user subsequently confirmed they selected Ghostty’s default-terminal menu 
 
 ## Future reliability decision
 
+**Resolved 2026-10-30:** the owner chose option 3 (FileVault off, automatic
+login as `rat`), with Rex in place of ChatGPT as the service that must recover.
+See [unattended recovery](macos-unattended-recovery.md). The text below is the
+original point-in-time analysis.
+
 The desired long-term outcome is one always-on Betty with power and Ethernet, without a second gateway, and reliable recovery after reboot; ChatGPT availability is optional. Today, leave the current working setup and security boundaries intact. In particular, login items run after user login and do not establish pre-login Tailscale availability.
 
 Options to investigate, not approved or implemented:
