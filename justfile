@@ -26,6 +26,10 @@ rustdesk-preview:
 rustdesk-install:
     uv run --no-project scripts/betty_desktop.py rustdesk-install --apply
 
+# Time Betty's unattended recovery; start, then cut power or restart Betty.
+recovery-watch *args:
+    uv run --no-project scripts/recovery_watch.py {{ args }}
+
 # Check the harness behavior and justfile formatting.
 check:
     uv run --no-project scripts/betty_desktop.py self-test

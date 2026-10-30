@@ -91,6 +91,17 @@ Agent CLIs keep sign-in credentials in `rat`'s login Keychain, which automatic
 login unlocks. A pre-login daemon could not use them; this is another reason
 the design depends on a real `rat` session.
 
+## Hardening review — 2026-10-30
+
+Findings from read-only checks; none of these changes have been made yet.
+
+| Issue | Finding | Proposed fix | Owner |
+| --- | --- | --- | --- |
+| Betty can reach the MacBook's Rex | The MacBook app serves its own Rex server over Tailscale (`foobar2-rex`). From a Betty pane, `rex -S https://foobar2-rex… whoami` returned `wcygan@github … from betty, acting as wcygan`: anything on Betty, including agents, can open a full shell on the vault-bearing MacBook. This breaks the boundary in the [workstation plan](macos-agent-workstation.md). | Turn off **Serve over Tailscale** in the MacBook app's Server settings; the phone then sees only Betty | owner |
+| Screen never locks | `sysadminctl -screenLock` reports a 14,400 s delay and display sleep is off, so the auto-logged-in desktop stays open | Require the password immediately, then lock about a minute after login with a `rat` LaunchAgent (`pmset displaysleepnow`). Rex, SSH, Tailscale and agents keep running while locked; native Computer Use on a locked screen is intermittent | owner sets the password rule; agent adds the LaunchAgent |
+| Tailscale keys expire | `betty` expires 2027-04-27 and `betty-rex` 2027-04-28; after that Betty drops off until someone signs in again | Disable key expiry for both devices in the Tailscale admin console, or set a calendar reminder | owner |
+| Find My / Activation Lock | Not checked | Confirm on in `rat`'s or `cygan`'s Apple Account settings | owner |
+
 ## Recovery sequence
 
 1. Power returns; firmware starts the Mac (`autorestart`).
@@ -137,6 +148,17 @@ layouts and labels came back, each pane with a fresh shell.
 ## Repeat test
 
 Repeat after macOS, Rex, or Tailscale changes, or to measure a longer outage.
+
+Run the same watcher from the MacBook, then cut power and leave Betty alone:
+
+```sh
+just recovery-watch --lan-host <Betty's wired LAN address>
+```
+
+It prints each stage's time after Betty drops off and exits 0 once SSH,
+automatic login, Tailscale and the Rex server have all returned. Without
+`--lan-host` it skips the boot-to-network stage. Use the wired (`en0`)
+address: `betty.local` can resolve to the Wi-Fi interface instead.
 
 Perform after Rex and the agent CLIs are installed. Do not touch Betty between
 steps 1 and 3.
