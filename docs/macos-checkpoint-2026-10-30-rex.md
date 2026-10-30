@@ -51,8 +51,14 @@ All as `rat`, without administrator rights:
 
 ## Things to know
 
-- `claude auth status` over plain SSH reports "not logged in" because SSH
-  sessions cannot read `rat`'s login Keychain. Check from a Rex pane instead.
+- Plain SSH sessions cannot read `rat`'s login Keychain. Over SSH,
+  `claude auth status` reports "not logged in" and `gh` falls back to
+  anonymous access (60 requests/hour, no GraphQL), which makes
+  `./bootstrap.sh agent-skills` fail. Run credentialed work in a Rex pane,
+  which runs in `rat`'s desktop session. On 2026-10-30 an SSH attempt left a
+  recovery marker that `./bootstrap.sh recover --apply --yes` cleared after
+  `--check` showed no partial install; the catalog then updated to
+  `359fa13` (72 skills) from a Rex pane.
 - Rex's agent skill tells agents to name their Rex session. Expect session
   labels to change when agents start tasks.
 - Rex sessions do not survive a restart; the server and logins do.
