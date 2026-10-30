@@ -4,8 +4,8 @@ Decided 2026-10-30. This record owns Betty's power-loss recovery design and
 supersedes the "keep FileVault on, automatic login off" guidance in the
 [workstation plan](macos-agent-workstation.md) and option list in the
 [headless recovery findings](macos-headless-recovery-findings-2026-10-29.md).
-Status: settings applied; a restart test passed 2026-10-30; **no power-cut
-test has passed yet**.
+Status: settings applied; a restart test and a power-cut test passed
+2026-10-30.
 
 ## Goal
 
@@ -71,12 +71,12 @@ Mitigations, in force or planned:
 
 | Layer | Setting | Owner | Status 2026-10-30 |
 | --- | --- | --- | --- |
-| Power | `autorestart 1` (start up after power failure), `sleep 0` | `cygan` | Verified over SSH |
+| Power | `autorestart 1` (start up after power failure), `sleep 0` | `cygan` | Passed power-cut test 2026-10-30 |
 | Disk | FileVault off | `cygan` | Verified over SSH (`fdesetup status`) |
 | Login | Automatic login as `rat` | `cygan` | Passed restart test 2026-10-30 |
 | Network | Wired Ethernet `en0` is the default route | — | Verified over SSH |
 | Tailscale | Standalone `macsys` app, Open at Login for `rat` | `rat` | Passed restart test 2026-10-30 |
-| Rex | Rex app at login for `rat`; its server joins the tailnet with built-in Tailscale as `betty-rex` | `rat` | Installed and reachable 2026-10-30; recovery after power loss untested |
+| Rex | Rex app at login for `rat`; its server joins the tailnet with built-in Tailscale as `betty-rex` | `rat` | Passed power-cut test 2026-10-30 |
 | Rex config | `~/.config/rex` links to the dotfiles checkout | `rat` | Verified; dotfiles at `bc86408` |
 | Agents | `claude`, `codex`, `pi` CLIs; `rex skill setup` and hooks | `rat` | Installed, signed in, and drove Rex panes 2026-10-30 ([checkpoint](macos-checkpoint-2026-10-30-rex.md)) |
 | Backup power | UPS | owner | Optional; not present (`pmset -g ps` reports AC only) |
@@ -116,7 +116,27 @@ the console, and Tailscale reported Betty online. This proves automatic login
 and Tailscale recovery. It does not exercise `autorestart` (power returning)
 or Rex, which was not installed yet.
 
-## Acceptance test (pending)
+## Power-cut test — 2026-10-30 (passed)
+
+The owner unplugged Betty and plugged it back in, then left it alone. The
+MacBook watcher polled the LAN, SSH over Tailscale, and `rex -S betty ls`:
+
+| Time after Betty dropped off | Stage |
+| --- | --- |
+| 0 s (15:29:28) | LAN SSH port stopped answering |
+| 15 s | LAN SSH port answered |
+| 26 s | SSH as `rat` over Tailscale; console user `rat`; Tailscale running; `betty-rex` answered `rex ls` |
+
+Betty powered on without a button press, so `autorestart` works. Kernel boot
+time was 15:29:28, the same second the watcher first saw it offline, so the
+plug was out for only a few seconds rather than the suggested 30. `rat` cannot
+read the logged shutdown cause, so the power loss itself rests on the owner's
+report. The Rex server started at 20:29:43 UTC with both sessions restored:
+layouts and labels came back, each pane with a fresh shell.
+
+## Repeat test
+
+Repeat after macOS, Rex, or Tailscale changes, or to measure a longer outage.
 
 Perform after Rex and the agent CLIs are installed. Do not touch Betty between
 steps 1 and 3.

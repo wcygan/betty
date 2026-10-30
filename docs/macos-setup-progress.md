@@ -166,7 +166,8 @@ was performed in this revalidation.
   ([checkpoint](macos-checkpoint-2026-10-30-rex.md)).
 - [x] Restart test: automatic login and Tailscale recovered in about 40 s
   without input (2026-10-30).
-- [ ] Pass the power-cut acceptance test in the unattended recovery record.
+- [x] Power-cut test: Betty, Tailscale and the Rex server recovered in about
+  26 s without input (2026-10-30).
 - [ ] Install/authenticate Codex CLI if SSH-based Codex projects are desired,
   then test it in a fresh remote login shell.
 - [ ] Re-audit scoped GitHub permissions/expiration without exposing the token;

@@ -10,12 +10,12 @@ was set up and verified at this checkpoint.
 
 | Area | State | Evidence |
 | --- | --- | --- |
-| Recovery | FileVault off, automatic login as `rat`, start after power failure | Restart test: back on Tailscale with `rat` logged in after ~40 s, no input |
+| Recovery | FileVault off, automatic login as `rat`, start after power failure | Restart test ~40 s; power-cut test: SSH, Tailscale and `betty-rex` back ~26 s after dropping off, no input |
 | Rex server | Superlogical Rex Beta 0.1.0 (server `0.0.1793377904-ge6592f`) runs as `rat`; built-in Tailscale serves `betty-rex`; access limited to `wcygan@github` | `rex -S betty whoami` from the MacBook: `wcygan@github over tailscale … acting as rat` |
 | Rex config | `~/.config/rex` links to the dotfiles checkout; five Ghostty-equivalent shortcuts | `rex -S betty -C betty keymap` lists them from `init.lua` |
 | Shell | New Rex panes run Fish with Rex's own `rex` first on `PATH` | Checked in a fresh pane opened from the MacBook |
 | MacBook | Connected client; Betty is its Rex home (`rex home set`) and a saved host; Switch Host works in the app | `rex -S betty client ls` |
-| Phone | User reported it connects | Not connected when checked; not independently verified |
+| Phone | Owner confirmed it shows both Betty and the MacBook | Owner-observed in the Rex phone app |
 | Claude Code 2.1.314 | Signed in with the claude.ai account; Rex skill and session-start hook | Started in a Betty pane: saw the Rex hook, opened, read and closed a pane |
 | Codex 0.165.0 | Signed in with ChatGPT; Rex skill; hook approved | Same test passed after the sandbox change below |
 | Pi 1.4.0 | Signed in to OpenRouter and OpenAI; Rex skill (Pi has no hooks) | Same pane test passed |
@@ -61,12 +61,12 @@ All as `rat`, without administrator rights:
   `359fa13` (72 skills) from a Rex pane.
 - Rex's agent skill tells agents to name their Rex session. Expect session
   labels to change when agents start tasks.
-- Rex sessions do not survive a restart; the server and logins do.
+- After a restart Rex restores sessions, layouts and labels, with a fresh shell
+  in each pane. Running programs and scrollback do not survive.
 
 ## Still open
 
-- Power-cut acceptance test with Rex and the agents installed (see
-  [unattended recovery](macos-unattended-recovery.md)). It is the only test of
-  `autorestart` and of Rex returning as a login item.
+The power-cut test passed after this note was first written; see
+[unattended recovery](macos-unattended-recovery.md).
+
 - Optional screen lock after automatic login, and Find My/Activation Lock check.
-- Phone connection to be verified by the owner.
