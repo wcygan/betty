@@ -161,8 +161,9 @@ was performed in this revalidation.
   One successful idle trial does not establish locked-use reliability.
 - [x] Choose a recovery design: FileVault off, automatic login as `rat`
   ([unattended recovery](macos-unattended-recovery.md)).
-- [ ] Install Rex and the agent CLIs as `rat`; add Rex to Open at Login; sign
-  in Rex's built-in Tailscale as `betty-rex`.
+- [x] Install Rex and the agent CLIs as `rat`; Rex at login with built-in
+  Tailscale as `betty-rex`; agents signed in and driving Rex
+  ([checkpoint](macos-checkpoint-2026-10-30-rex.md)).
 - [x] Restart test: automatic login and Tailscale recovered in about 40 s
   without input (2026-10-30).
 - [ ] Pass the power-cut acceptance test in the unattended recovery record.

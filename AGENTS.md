@@ -8,6 +8,9 @@
 - **Recovery**: `docs/macos-unattended-recovery.md` owns power-loss recovery:
   FileVault off and automatic login as `rat` by owner decision (2026-10-30).
   Read it before changing FileVault, login, power, or login-item settings.
+- **Rex host**: Betty runs the always-on Rex server (`betty-rex`) for the
+  MacBook and phone; agents run in its panes. Latest state:
+  `docs/macos-checkpoint-2026-10-30-rex.md`.
 - **Architecture**: ARM64 (aarch64) — Apple Silicon running macOS
 - **OS**: macOS Tahoe 26.7.2 (revalidated 2026-10-29); standard agent user `rat`
 - **Purpose**: Development server for small-scale experiments and home projects

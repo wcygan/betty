@@ -76,9 +76,9 @@ Mitigations, in force or planned:
 | Login | Automatic login as `rat` | `cygan` | Passed restart test 2026-10-30 |
 | Network | Wired Ethernet `en0` is the default route | — | Verified over SSH |
 | Tailscale | Standalone `macsys` app, Open at Login for `rat` | `rat` | Passed restart test 2026-10-30 |
-| Rex | Rex app at login for `rat`; its server joins the tailnet with built-in Tailscale as `betty-rex` | `rat` | Not installed yet |
+| Rex | Rex app at login for `rat`; its server joins the tailnet with built-in Tailscale as `betty-rex` | `rat` | Installed and reachable 2026-10-30; recovery after power loss untested |
 | Rex config | `~/.config/rex` links to the dotfiles checkout | `rat` | Verified; dotfiles at `bc86408` |
-| Agents | `claude`, `codex`, `pi` CLIs; `rex skill setup` and hooks | `rat` | Not installed yet |
+| Agents | `claude`, `codex`, `pi` CLIs; `rex skill setup` and hooks | `rat` | Installed, signed in, and drove Rex panes 2026-10-30 ([checkpoint](macos-checkpoint-2026-10-30-rex.md)) |
 | Backup power | UPS | owner | Optional; not present (`pmset -g ps` reports AC only) |
 
 Rex's built-in Tailscale makes Rex its own tailnet device, independent of the
